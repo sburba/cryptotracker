@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "cryptotracker"
+version = "1.0.0"
+description = "Track cryptocurrency prices"
+authors = ["Sam Burba <github@samburba.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+sendgrid = "^6.2.2"
+fastapi = "^0.54.1"
+uvicorn = "^0.11.3"
+httpx = "^0.12.1"
+pydantic = "^1.5.1"
+
+[tool.poetry.dev-dependencies]
+black = "^19.10b0"
+rope = "^0.16.0"
+mypy = "^0.770"
+flake8 = "^3.7.9"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

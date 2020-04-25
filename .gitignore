@@ -1,0 +1,11 @@
+# Python caches + venv
+.mypy_cache
+.venv
+__pycache__
+
+# Visual Studio Code
+.vscode
+.history
+
+# App config
+.env
