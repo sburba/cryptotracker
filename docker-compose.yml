@@ -9,7 +9,7 @@ services:
     environment:
       INSTALL_DEV: "true"
       PORT: "8000"
-      DB_URL: postgres://postgres:dev_password@db/cryptotracker
+      DATABASE_URL: postgres://postgres:dev_password@db/cryptotracker
       SENDGRID_API_KEY:
       USE_REAL_MAILER:
       NOTIFY_EMAILS:
