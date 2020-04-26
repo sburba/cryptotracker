@@ -68,3 +68,14 @@ heroku run poetry run alembic upgrade head
 # Open the app
 heroku open
 ```
+Then navigate to /docs on the opened page
+
+# Set up regular updates
+```bash
+heroku addons:create scheduler:standard
+heroku addons:open scheduler #will open a browser
+```
+
+There's no CLI interface to set up a schedule unfortunately
+
+enter `python -m app.update_trade_volumes.py` in the run command box and pick your desired update frequency
