@@ -59,7 +59,9 @@ class CurrencyTradeVolumeStore:
         rows = await self._db.fetch_all(query)
         # Query sorts by std_dev, so they are in rank order, but have to add one since ranks aren't zero-indexed
         return [
-            CurrencyPairAvg(currency_pair=row["currency_pair"], avg_volume=row["avg_volume"])
+            CurrencyPairAvg(
+                currency_pair=row["currency_pair"], avg_volume=row["avg_volume"]
+            )
             for index, row in enumerate(rows)
         ]
 
@@ -83,7 +85,11 @@ class CurrencyTradeVolumeStore:
         rows = await self._db.fetch_all(query)
         # Query sorts by std_dev, so they are in rank order, but have to add one since ranks aren't zero-indexed
         return [
-            CurrencyPairStdDev(rank=index + 1, currency_pair=row["currency_pair"], volume_std_dev=row["volume_std_dev"])
+            CurrencyPairStdDev(
+                rank=index + 1,
+                currency_pair=row["currency_pair"],
+                volume_std_dev=row["volume_std_dev"],
+            )
             for index, row in enumerate(rows)
         ]
 
@@ -100,6 +106,8 @@ class CurrencyTradeVolumeStore:
         rows = await self._db.fetch_all(query, {"currency_pair": currency_pair})
 
         return [
-            CurrencyTradeVolumeRecord(row["fetch_time"], row["currency_pair"], row["volume"])
+            CurrencyTradeVolumeRecord(
+                row["fetch_time"], row["currency_pair"], row["volume"]
+            )
             for row in rows
         ]

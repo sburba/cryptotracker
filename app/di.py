@@ -9,7 +9,7 @@ from app import settings
 from app.currency_trade_volume_service import CurrencyTradeVolumeService
 from app.currency_trade_volume_store import CurrencyTradeVolumeStore
 from app.livecoin_api import LivecoinApi
-from app.mailer import SendGridMailer, LoggingMailer
+from app.mailer import SendGridMailer, LoggingMailer, Mailer
 
 
 # TODO: FastAPI has a real dependency injection system, we should use that
@@ -22,6 +22,8 @@ class Deps:
 def make_deps(client: httpx.AsyncClient) -> Deps:
     database = Database(settings.DATABASE_URL)
 
+    # Declare type ahead of time to tell mypy it
+    mailer: Mailer
     if settings.USE_REAL_MAILER:
         mailer = SendGridMailer(SendGridAPIClient(settings.SENDGRID_API_KEY))
     else:

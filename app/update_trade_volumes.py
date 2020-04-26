@@ -16,5 +16,6 @@ async def main():
         await deps.currency_trade_service.update_trade_volumes()
         await deps.database.disconnect()
 
+
 if __name__ == "__main__":
     asyncio.run(main())

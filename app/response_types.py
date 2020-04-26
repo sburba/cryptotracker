@@ -26,4 +26,3 @@ class HistoryApiResponse(BaseModel):
 
 class RecordTradeVolumeResponse(BaseModel):
     success: bool
-
