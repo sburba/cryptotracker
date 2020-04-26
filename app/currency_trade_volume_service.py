@@ -29,6 +29,11 @@ class CurrencyPairSnapshot:
     currency_pair: str
     history: List[CurrencyTradeVolumeRecord]
     rank: int
+    """
+    The currency pair's position in the list of all tracked currency pairs
+    sorted by the standard deviation of their trade volume over the last 24
+    hours
+    """
     total_tracked_currency_pairs: int
 
 

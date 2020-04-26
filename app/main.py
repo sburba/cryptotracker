@@ -34,8 +34,11 @@ async def volume_history(currency_pair: CurrencyPair):
     return await deps.currency_trade_service.get_currency_pair_snapshot(currency_pair)
 
 
-@app.get("/webhook/record_trade_volume")
+@app.get("/webhook/record_trade_volume", response_model=RecordTradeVolumeResponse)
 async def record_trade_volume() -> RecordTradeVolumeResponse:
+    """
+    This api exists for demonstration purposes so you don't have to wait until the job runs again to pick up new data
+    """
     await deps.currency_trade_service.update_trade_volumes()
 
     return RecordTradeVolumeResponse(success=True)
