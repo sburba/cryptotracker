@@ -39,6 +39,12 @@ Should return:
 }
 ```
 
+# Updating trade volumes in local dev
+
+```bash
+dc run --rm app python -m app.update_trade_volumes
+```
+
 # Deploy with heroku
 
 Install heroku cli and log in
