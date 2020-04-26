@@ -24,6 +24,10 @@ class CurrencyTradeVolumeStore:
         self._db = db
 
     async def record_trade_volumes(self, records: List[CurrencyTradeVolumeRecord]):
+        """
+        Store the given trade volumes
+        """
+
         query = """
         INSERT INTO currency_pair_volumes(fetch_time, volume, currency_pair)
         VALUES (:fetch_time, :volume, :currency_pair)
@@ -96,6 +100,9 @@ class CurrencyTradeVolumeStore:
     async def get_currency_pair_history(
         self, currency_pair: str,
     ) -> List[CurrencyTradeVolumeRecord]:
+        """
+        Fetch all of the trade volumes for the past 24 hours for the given currency pair
+        """
         query = """
             SELECT currency_pair, fetch_time, volume
             FROM currency_pair_volumes

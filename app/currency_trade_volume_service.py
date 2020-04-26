@@ -61,6 +61,11 @@ class CurrencyTradeVolumeService:
         self._notify_emails = notify_emails
 
     async def update_trade_volumes(self):
+        """
+        Load another batch of trade volumes from the API and record them
+        Send out email alerts for notable changes in trade volume
+        """
+
         trade_volumes = await self._api.fetch_trade_volumes(_TRACKED_PAIRS)
         await self._store.record_trade_volumes(trade_volumes)
         avg_trade_volumes = await self._store.get_currency_pair_averages()
@@ -81,6 +86,10 @@ class CurrencyTradeVolumeService:
     async def get_currency_pair_snapshot(
         self, currency_pair: CurrencyPair
     ) -> CurrencyPairSnapshot:
+        """
+        Get a history trade volume history for the last 24 hours of the given currency pair as well as a ranking for the
+        amount of fluctuation in the given pair amongst all currency pair trade volumes
+        """
         std_devs = await self._store.get_currency_pair_ranks()
         history = await self._store.get_currency_pair_history(currency_pair)
 

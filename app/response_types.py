@@ -10,6 +10,8 @@ class HistoryItem(BaseModel):
     time: datetime
     volume: float
 
+    # orm_mode allows dataclasses to pass this validation, otherwise we would have to convert them to dicts first
+    # See https://pydantic-docs.helpmanual.io/usage/model_config/
     class Config:
         orm_mode = True
 
@@ -20,6 +22,8 @@ class HistoryApiResponse(BaseModel):
     rank: int
     total_tracked_currency_pairs: int
 
+    # orm_mode allows dataclasses to pass this validation, otherwise we would have to convert them to dicts first
+    # See https://pydantic-docs.helpmanual.io/usage/model_config/
     class Config:
         orm_mode = True
 

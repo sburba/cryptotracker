@@ -8,6 +8,14 @@ from sendgrid.helpers.mail import Mail
 class Mailer(ABC):
     @abstractmethod
     def send_mail(self, email: str, subject: str, contents: str) -> None:
+        """
+        Send an email to the specified recipient
+
+        :param email: Destination email address
+        :param subject: Email subject line
+        :param contents: May be HTML if necessary
+        :return:
+        """
         ...
 
 
@@ -26,10 +34,10 @@ class SendGridMailer(Mailer):
     def __init__(self, sendgrid_api: SendGridAPIClient):
         self._sendgrid_api = sendgrid_api
 
-    def send_mail(self, to_email: str, subject: str, contents: str) -> None:
+    def send_mail(self, email: str, subject: str, contents: str) -> None:
         message = Mail(
             from_email="cryptotracker@samburba.com",
-            to_emails=to_email,
+            to_emails=email,
             subject="Cryptotracker Alert",
             html_content=contents,
         )
