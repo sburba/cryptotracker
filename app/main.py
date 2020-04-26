@@ -1,59 +1,89 @@
-import uvicorn
+import sys
+from datetime import datetime
 from typing import List
-from fastapi import FastAPI, HTTPException
-from enum import Enum
-from pydantic import BaseModel
-import datetime
+import logging
 
-from pydantic.dataclasses import dataclass
 import httpx
+import uvicorn
+from databases import Database
+from fastapi import FastAPI
+from pydantic import BaseModel
+from sendgrid import SendGridAPIClient
+
+from app import settings
+from app.currency_trade_volume_service import CurrencyTradeVolumeService, CurrencyPair
+from app.currency_trade_volume_store import CurrencyTradeVolumeStore
+from app.livecoin_api import LivecoinApi
+from app.mailer import SendGridMailer, LoggingMailer
 
 app = FastAPI()
 
+logging.basicConfig(level=logging.DEBUG, stream=sys.stdout)
 
-class TickerItem(BaseModel):
-    symbol: str
-    volume: int
-
-
-class TickerApiResponse(BaseModel):
-    __root__: List[TickerItem]
+database = Database(settings.DATABASE_URL)
+if settings.USE_REAL_MAILER:
+    mailer = SendGridMailer(SendGridAPIClient(settings.SENDGRID_API_KEY))
+else:
+    mailer = LoggingMailer(logging.getLogger("Mail"))
 
 
 class HistoryItem(BaseModel):
-    time: datetime.datetime
-    value: float
+    time: datetime
+    volume: float
+
+    class Config:
+        orm_mode = True
 
 
 class HistoryApiResponse(BaseModel):
-    symbol: str
+    currency_pair: CurrencyPair
     history: List[HistoryItem]
+    rank: int
+    total_tracked_currency_pairs: int
+
+    class Config:
+        orm_mode = True
 
 
-class Symbol(str, Enum):
-    BNT_TO_BTC = "BNT_BTC"
-    GOLD_TO_BTC = "GOLD_BTC"
-    CBC_TO_ETH = "CBC_ETH"
+class RecordTradeVolumeResponse(BaseModel):
+    success: bool
 
 
-@app.get("/api/{symbol}/history", response_model=HistoryApiResponse)
-async def history(symbol: Symbol) -> HistoryApiResponse:
-    return HistoryApiResponse(
-        symbol="BNT/BTC", history=[HistoryItem(time=datetime.datetime.now(), value=1.5)]
+def make_service(client: httpx.AsyncClient):
+    return CurrencyTradeVolumeService(
+        store=CurrencyTradeVolumeStore(database),
+        api=LivecoinApi(client),
+        mailer=mailer,
+        notify_emails=settings.NOTIFY_EMAILS,
     )
 
 
-@app.get("/webhook/record_metric_stats")
-async def record_metric_stats() -> List[TickerItem]:
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
+
+
+@app.get("/api/volume_history", response_model=HistoryApiResponse)
+async def volume_history(currency_pair: CurrencyPair):
+    # TODO: FastAPI has a real dependency injection system, we should use that
     async with httpx.AsyncClient() as client:
-        bare_resp = await client.get("https://api.livecoin.net/exchange/ticker")
+        service = make_service(client)
+        return await service.get_currency_pair_snapshot(currency_pair)
 
-    if bare_resp.status_code != 200:
-        # TODO: log
-        raise HTTPException(status_code=500)
 
-    ticker_items = TickerApiResponse.parse_obj(bare_resp.json())
-    return ticker_items.__root__
+@app.get("/webhook/record_trade_volume")
+async def record_trade_volume() -> RecordTradeVolumeResponse:
+    # TODO: FastAPI has a real dependency injection system, we should use that
+    async with httpx.AsyncClient() as client:
+        service = make_service(client)
+        await service.update_trade_volumes()
+
+    return RecordTradeVolumeResponse(success=True)
 
 
 if __name__ == "__main__":

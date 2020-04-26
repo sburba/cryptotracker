@@ -1,0 +1,28 @@
+version: "3"
+volumes:
+  db_data:
+services:
+  app:
+    image: cryptotracker
+    build: .
+    command: /start-reload.sh
+    environment:
+      INSTALL_DEV: "true"
+      PORT: "8000"
+      DB_URL: postgres://postgres:dev_password@db/cryptotracker
+      SENDGRID_API_KEY:
+      USE_REAL_MAILER:
+      NOTIFY_EMAILS:
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/app/
+  db:
+    image: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: cryptotracker
+      POSTGRES_PASSWORD: dev_password

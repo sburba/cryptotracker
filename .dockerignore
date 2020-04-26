@@ -1,0 +1,12 @@
+# Python tools
+__pycache__
+.mypy_cache
+.venv
+
+# Visual Studio Code
+.vscode
+.history
+
+# Intellij
+.idea
+*.iml
