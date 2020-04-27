@@ -146,13 +146,14 @@ are updated in each sync, or fail the job if not all metrics are synced to expos
 ## Testing
 
 For a production application we would need much better unit test coverage to feel confident about releasing frequently.
-The most valuable unit test coverage would be getting better branch coverage on `CurrencyTradeVolumeService`, including
-covering more unlikely scenarios like being unable to find the average volume for a currency pair and coverage for
-`LivecoinApi` covering scenarios like the API being down, returning unexpected data, timing out, etc... It would also be
+The most valuable unit tests would target better branch coverage on `CurrencyTradeVolumeService`, including
+more unlikely scenarios such as being unable to find the average volume for a currency pair and coverage for
+`LivecoinApi` scenarios (API being down, returning unexpected data, timing out, etc). It would also be
 useful to pull a real JSON response from the Livecoin API to use in testing `LivecoinApi`.
 
-I would also like integration tests to verify `CurrencyTradeVolumeStore` can successfully and correctly fetch data from
-the database and the whole api -> service -> database and cli -> api -> database processes function successfully.
+Integration tests to verify `CurrencyTradeVolumeStore` can successfully and correctly fetch data from
+the database and the whole api -> service -> database and cli -> api -> database processes function successfully
+would also be important for stability.
 
 # Other Thoughts
 
@@ -174,5 +175,5 @@ short jobs, and cannot be scheduled to run more frequently than every ten minute
 more robust job scheduler.
 
 It also uses the free heroku postgres addon, which can only contain 10k rows, so I've drastically reduced the number of
-metrics it tracks to allow it to keep a couple days worth of data. For the deployment to survive longer-term we will
+metrics it tracks to allow it to comfortably keep a days worth of data. For the deployment to survive longer-term we will
 need to schedule a job to automatically clean up old data.
