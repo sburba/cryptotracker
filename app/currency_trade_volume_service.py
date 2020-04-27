@@ -90,19 +90,19 @@ class CurrencyTradeVolumeService:
         Get a history trade volume history for the last 24 hours of the given currency pair as well as a ranking for the
         amount of fluctuation in the given pair amongst all currency pair trade volumes
         """
-        std_devs = await self._store.get_currency_pair_ranks()
+        ranks = await self._store.get_currency_pair_ranks()
         history = await self._store.get_currency_pair_history(currency_pair)
 
-        rank: Optional[int] = None
-        for std_dev in std_devs:
-            if std_dev.currency_pair == currency_pair:
-                rank = std_dev.rank
+        target_rank: Optional[int] = None
+        for rank in ranks:
+            if rank.currency_pair == currency_pair:
+                target_rank = rank.rank
 
-        if rank is None:
+        if target_rank is None:
             # TODO: Log requested currency pair and results
             # This will cause the service to 500 if we have a supported currency pair that we don't have any data for
             # yet (or if the syncing process has failed for the last hour). We should make the API return a custom error
             # code in this case so that the UI can handle that case and display some information
             raise PairNotFoundException()
 
-        return CurrencyPairSnapshot(currency_pair, history, rank, len(_TRACKED_PAIRS))
+        return CurrencyPairSnapshot(currency_pair, history, target_rank, len(_TRACKED_PAIRS))
