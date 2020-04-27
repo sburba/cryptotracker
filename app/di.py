@@ -20,9 +20,12 @@ class Deps:
 
 
 def make_deps(client: httpx.AsyncClient) -> Deps:
+    """
+    Create all the dependencies needed to run the app
+    """
     database = Database(settings.DATABASE_URL)
 
-    # Declare type ahead of time to tell mypy it
+    # Declare type ahead of time to tell mypy it's the generic type
     mailer: Mailer
     if settings.USE_REAL_MAILER:
         mailer = SendGridMailer(SendGridAPIClient(settings.SENDGRID_API_KEY))
