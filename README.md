@@ -37,23 +37,23 @@ Should return:
 ## Running unit tests
 
 ```bash
-dc run --rm app pytest app/tests
+docker-compose run --rm app pytest app/tests
 ```
 
 ## Typechecking
 ```bash
-dc run --rm app mypy app
+docker-compose run --rm app mypy app
 ```
 
 ## Format code
 ```bash
-dc run --rm app black app
+docker-compose run --rm app black app
 ```
 
 ## Updating trade volumes
 
 ```bash
-dc run --rm app python -m app.update_trade_volumes
+docker-compose run --rm app python -m app.update_trade_volumes
 ```
 
 # Deploy with heroku
@@ -103,7 +103,7 @@ have to also move the ranking process into a system that can write to a filesyst
 
 If fetching all of the metrics takes too long, we can split the work into batches of metrics and run them in parallel,
 but that would require coordinating across those parallel workers to track when they are all done so the ranking can be
-calculated
+calculated.
 
 ### Sampling metrics frequently
 
@@ -114,7 +114,7 @@ also of course drop records older than 24 hours. If we want to keep the historic
 historical table to keep the hot table relatively small or export it to another datastore for colder storage.
 
 Sampling metrics frequently will also benefit from splitting out the email processing into its own background task as
-described in the handling many users section as it will reduce the run time of the ingest job
+described in the handling many users section as it will reduce the run time of the ingest job.
 
 ### Handling many users
 
@@ -125,13 +125,13 @@ it. With this model we can scale with many redis/memcache read-replicas since th
 
 Another consideration with many users is it may take too long to send alert emails to all of the users during the ingest
 process. Instead of doing that inline we can trigger another background process to do the alert analysis and email
-process after ingest so that the email sending process doesn't block the ingest from finishing
+process after ingest so that the email sending process doesn't block the ingest from finishing.
 
 ## Monitoring
 
 There are two portions of the application that should be monitored, the REST API and the ingest process.
 
-Any off-the-shelf APM monitoring solution should track the API without much additional work, but the key metrics to track
+Any off-the-shelf APM solution should track the API without much additional work, but the key metrics to track
 there are response status codes and percentile latencies. It's also a good idea to alert on sudden drops in traffic if
 traffic is regular enough to support that, and set up an external service to do a basic sanity check by calling the API
 regularly and reporting failures.
@@ -141,7 +141,7 @@ long, there's a non-successful exit code, or the last successful run was too lon
 APM/monitoring solutions support custom metrics, so we can have the ingest process report runtime (or if the scheduling
 system we use tracks that information externally we can query it from their API). We can regularly fetch last ingest
 time from the database to expose that to the monitoring solution for alerting. We should also track how many metrics
-are updated in each sync, or fail the job if not all metrics are synced to expose issues with partial data fetching
+are updated in each sync, or fail the job if not all metrics are synced to expose issues with partial data fetching.
 
 ## Testing
 
@@ -149,7 +149,7 @@ For a production application we would need much better unit test coverage to fee
 The most valuable unit test coverage would be getting better branch coverage on `CurrencyTradeVolumeService`, including
 covering more unlikely scenarios like being unable to find the average volume for a currency pair and coverage for
 `LivecoinApi` covering scenarios like the API being down, returning unexpected data, timing out, etc... It would also be
-useful to pull a real JSON response from the Livecoin API to use in testing `LivecoinApi`
+useful to pull a real JSON response from the Livecoin API to use in testing `LivecoinApi`.
 
 I would also like integration tests to verify `CurrencyTradeVolumeStore` can successfully and correctly fetch data from
 the database and the whole api -> service -> database and cli -> api -> database processes function successfully.
@@ -157,7 +157,7 @@ the database and the whole api -> service -> database and cli -> api -> database
 # Other Thoughts
 
 A real production release would need CI to run the tests and linters and we would need to choose a tool to manage
-deployments
+deployments.
 
 Right now the API documentation is not sufficient, a full description of request/response types and error messages are
 needed at minimum.
