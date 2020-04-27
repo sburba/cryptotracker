@@ -43,4 +43,7 @@ class SendGridMailer(Mailer):
         )
 
         # TODO: Log request/response details, handle exceptions
+        # TODO: This API sends network traffic synchronously
+        # This will block the event loop. We need to wrap it so
+        # it happens asynchronously
         self._sendgrid_api.send(message)
