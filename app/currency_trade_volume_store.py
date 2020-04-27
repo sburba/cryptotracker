@@ -7,7 +7,7 @@ from app.types import CurrencyTradeVolumeRecord
 
 
 @dataclass
-class CurrencyPairStdDev:
+class CurrencyPairRank:
     rank: int
     currency_pair: str
     volume_std_dev: float
@@ -69,7 +69,7 @@ class CurrencyTradeVolumeStore:
             for index, row in enumerate(rows)
         ]
 
-    async def get_currency_pair_ranks(self) -> List[CurrencyPairStdDev]:
+    async def get_currency_pair_ranks(self) -> List[CurrencyPairRank]:
         """
         Fetch a list of currency pair volume standard deviations over the last 24 hours
         """
@@ -89,7 +89,7 @@ class CurrencyTradeVolumeStore:
         rows = await self._db.fetch_all(query)
         # Query sorts by std_dev, so they are in rank order, but have to add one since ranks aren't zero-indexed
         return [
-            CurrencyPairStdDev(
+            CurrencyPairRank(
                 rank=index + 1,
                 currency_pair=row["currency_pair"],
                 volume_std_dev=row["volume_std_dev"],

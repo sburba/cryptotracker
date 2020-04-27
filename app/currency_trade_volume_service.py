@@ -75,11 +75,11 @@ class CurrencyTradeVolumeService:
         # list every time
         for trade_volume in trade_volumes:
             avg_volume = _find_avg_volume(trade_volume.currency_pair, avg_trade_volumes)
-            if avg_volume is not None and trade_volume.volume * 3 < avg_volume:
+            if avg_volume is not None and trade_volume.volume >= avg_volume * 3:
                 for email in self._notify_emails:
                     self._mailer.send_mail(
                         email,
-                        "CrytoTracker Alert",
+                        "CryptoTracker Alert",
                         f"{trade_volume.currency_pair} is trading at {trade_volume.volume}",
                     )
 

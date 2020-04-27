@@ -39,6 +39,12 @@ Should return:
 }
 ```
 
+# Running unit tests
+
+```bash
+dc run --rm app pytest app/tests
+```
+
 # Updating trade volumes in local dev
 
 ```bash
@@ -73,7 +79,7 @@ Then navigate to /docs on the opened page
 # Set up regular updates
 ```bash
 heroku addons:create scheduler:standard
-heroku addons:open scheduler #will open a browser
+heroku addons:open scheduler # will open a browser tab
 ```
 
 There's no CLI interface to set up a schedule unfortunately
