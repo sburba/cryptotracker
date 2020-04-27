@@ -61,12 +61,11 @@ class CurrencyTradeVolumeStore:
         """
 
         rows = await self._db.fetch_all(query)
-        # Query sorts by std_dev, so they are in rank order, but have to add one since ranks aren't zero-indexed
         return [
             CurrencyPairAvg(
                 currency_pair=row["currency_pair"], avg_volume=row["avg_volume"]
             )
-            for index, row in enumerate(rows)
+            for row in rows
         ]
 
     async def get_currency_pair_ranks(self) -> List[CurrencyPairRank]:
