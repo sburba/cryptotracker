@@ -15,6 +15,7 @@ services:
       SENDGRID_API_KEY:
       USE_REAL_MAILER:
       NOTIFY_EMAILS:
+      WAIT_FOR_DB: "true"
     ports:
       - 8000:8000
     volumes:
