@@ -50,7 +50,7 @@ dc run --rm app mypy app
 dc run --rm app black app
 ```
 
-# Updating trade volumes in local dev
+## Updating trade volumes
 
 ```bash
 dc run --rm app python -m app.update_trade_volumes
