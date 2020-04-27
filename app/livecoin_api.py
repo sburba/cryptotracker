@@ -28,6 +28,7 @@ class LivecoinApi:
         self, currency_pairs: List[str],
     ) -> List[CurrencyTradeVolumeRecord]:
         # TODO: Log details about the request/response
+        # TODO: Handle rate-limit responses by backing-off instead of just failing
         bare_resp = await self._client.get("https://api.livecoin.net/exchange/ticker")
 
         if bare_resp.status_code != 200:
@@ -40,6 +41,9 @@ class LivecoinApi:
 
         trade_volume_records: List[CurrencyTradeVolumeRecord] = []
         for item in ticker_items:
+            # It's unfortunate that we request all metrics from livecoin and then filter after we receive them. The API
+            # does allow requesting a single currency pair so we could request ones we care about in parallel, but
+            # there's a 1 request/second API limit so instead we just load all of them
             if item.symbol in currency_pairs:
                 trade_volume_records.append(
                     CurrencyTradeVolumeRecord(
