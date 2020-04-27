@@ -6,6 +6,7 @@ Can clear the old one at injestion time so there's no data staleness issue
 
 # Local dev
 
+## Environment Setup
 Install docker and docker-compose
 
 Set up environment variables
@@ -39,10 +40,20 @@ Should return:
 }
 ```
 
-# Running unit tests
+## Running unit tests
 
 ```bash
 dc run --rm app pytest app/tests
+```
+
+## Typechecking
+```bash
+dc run --rm app mypy app
+```
+
+## Format code
+```bash
+dc run --rm app black app
 ```
 
 # Updating trade volumes in local dev
