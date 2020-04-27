@@ -154,6 +154,16 @@ useful to pull a real JSON response from the Livecoin API to use in testing `Liv
 I would also like integration tests to verify `CurrencyTradeVolumeStore` can successfully and correctly fetch data from
 the database and the whole api -> service -> database and cli -> api -> database processes function successfully.
 
+# Other Thoughts
+
+Right now the API documentation is not sufficient, a full description of request/response types and error messages are
+needed at minimum.
+
+There's no authentication or rate-limiting, which will be important for a real production API.
+
+The number of values returned from the history API is probably excessive for displaying a 24 hour graph, we should
+probably determine the real number of values needed when we get to the UI stage.
+
 # Limitations
 
 The deployed application uses the free heroku scheduler to schedule the ingestion job, which is designed only to run
