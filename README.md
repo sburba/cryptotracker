@@ -156,6 +156,9 @@ the database and the whole api -> service -> database and cli -> api -> database
 
 # Other Thoughts
 
+A real production release would need CI to run the tests and linters and we would need to choose a tool to manage
+deployments
+
 Right now the API documentation is not sufficient, a full description of request/response types and error messages are
 needed at minimum.
 
