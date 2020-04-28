@@ -47,6 +47,10 @@ def _find_avg_volume(
     return None
 
 
+def _is_notable_volume_change(new_trade_volume: float, avg_trade_volume: float) -> bool:
+    return avg_trade_volume > 0 and new_trade_volume >= avg_trade_volume * 3
+
+
 class CurrencyTradeVolumeService:
     def __init__(
         self,
@@ -75,7 +79,9 @@ class CurrencyTradeVolumeService:
         # list every time
         for trade_volume in trade_volumes:
             avg_volume = _find_avg_volume(trade_volume.currency_pair, avg_trade_volumes)
-            if avg_volume is not None and trade_volume.volume >= avg_volume * 3:
+            if avg_volume is not None and _is_notable_volume_change(
+                trade_volume.volume, avg_volume
+            ):
                 for email in self._notify_emails:
                     self._mailer.send_mail(
                         email,
@@ -105,4 +111,6 @@ class CurrencyTradeVolumeService:
             # code in this case so that the UI can handle that case and display some information
             raise PairNotFoundException()
 
-        return CurrencyPairSnapshot(currency_pair, history, target_rank, len(_TRACKED_PAIRS))
+        return CurrencyPairSnapshot(
+            currency_pair, history, target_rank, len(_TRACKED_PAIRS)
+        )

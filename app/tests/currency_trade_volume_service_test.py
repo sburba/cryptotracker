@@ -83,6 +83,21 @@ async def test_no_alert_on_normal_trade_volume(service: CurrencyTradeVolumeServi
 
 
 @pytest.mark.asyncio
+async def test_no_alert_on_zero_trade_volume(service: CurrencyTradeVolumeService):
+    mock_api.fetch_trade_volumes.return_value = [
+        CurrencyTradeVolumeRecord(time=JAN_1ST, currency_pair="currency_pair", volume=0)
+    ]
+
+    mock_store.get_currency_pair_averages.return_value = [
+        CurrencyPairAvg("currency_pair", avg_volume=0)
+    ]
+
+    await service.update_trade_volumes()
+
+    mock_mailer.send_mail.assert_not_called()
+
+
+@pytest.mark.asyncio
 async def test_snapshot_missing_rank(service: CurrencyTradeVolumeService):
     mock_store.get_currency_pair_ranks.return_value = []
     mock_store.get_currency_pair_history.return_value = []
