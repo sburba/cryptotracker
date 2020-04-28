@@ -168,6 +168,8 @@ There's no authentication or rate-limiting, which will be important for a real p
 The number of values returned from the history API is probably excessive for displaying a 24 hour graph, we should
 probably determine the real number of values needed when we get to the UI stage.
 
+There aren't any indexes on any of the columns in the database right now, an index on the fetch_time and currency_pair columns would drastically speed up the queries we currently do as the table size gets larger
+
 # Limitations
 
 The deployed application uses the free heroku scheduler to schedule the ingestion job, which is designed only to run
